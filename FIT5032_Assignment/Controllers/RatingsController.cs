@@ -11,7 +11,6 @@ using Microsoft.AspNet.Identity;
 
 namespace FIT5032_Assignment.Controllers
 {   
-    //[Authorize(Roles ="doctor")]
     public class RatingsController : Controller
     {
         private Entities db = new Entities();
@@ -20,6 +19,18 @@ namespace FIT5032_Assignment.Controllers
         public ActionResult Index()
         {
             var ratingSet = db.RatingSet.Include(r => r.AspNetUsersDoctor).Include(r => r.AspNetUsersPatient);
+            var userId = User.Identity.GetUserId();
+            if (User.IsInRole("doctor"))
+            {
+                // 如果用户是医生，只显示评价他的记录
+                ratingSet = ratingSet.Where(r => r.AspNetUsersIdDoctor == userId);
+            }
+            if (User.IsInRole("patient"))
+            {
+                // 如果用户是医生，只显示评价他的记录
+                ratingSet = ratingSet.Where(r => r.AspNetUsersIdPatient == userId);
+            }
+
             return View(ratingSet.ToList());
         }
 
@@ -41,17 +52,11 @@ namespace FIT5032_Assignment.Controllers
         // GET: Ratings/Create
         public ActionResult Create()
         {
-            //ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers, "Id", "Email");
-            //ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers, "Id", "Email");
-            // 获取所有医生用户的ID列表
-            //var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
-            //                                 .SelectMany(r => r.AspNetUsers)
-            //                                 .Select(u => u.Id)
-            //                                 .ToList();
-            //// 使用上面的ID列表从AspNetUsers表中筛选医生
-            //ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers.Where(u => doctorUserIds.Contains(u.Id)), "Id", "Email");
-
-            //ViewBag.AspNetUsersIdDoctor = new SelectList(doctorUsers, "Id", "Email");
+            if (User.IsInRole("doctor"))
+            {
+                // 如果用户是doctor，重定向他们回到Index页面
+                return RedirectToAction("Index");
+            }
             var doctorRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "doctor");
             if (doctorRole != null)
             {
@@ -93,6 +98,10 @@ namespace FIT5032_Assignment.Controllers
         // GET: Ratings/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (User.IsInRole("doctor"))
+            {
+                return RedirectToAction("Index");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -128,6 +137,11 @@ namespace FIT5032_Assignment.Controllers
         // GET: Ratings/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (User.IsInRole("doctor"))
+            {
+                // 如果用户是医生 无法删除
+                return RedirectToAction("Index");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

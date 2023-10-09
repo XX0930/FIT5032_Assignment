@@ -1,0 +1,22 @@
+﻿@model IEnumerable<FIT5032_Assignment.Models.UserRoleViewModel>
+
+@using (Html.BeginForm("SaveRoles", "RolesController"))
+{
+    <table>
+        <tr>
+            <th>User</th>
+            <th>Role</th>
+        </tr>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@Html.HiddenFor(u => u.UserId) @Html.DropDownListFor(u => u.RoleId, user.Roles)</td>
+            </tr>
+        }
+    </table>
+
+    <input type="submit" value="Save" />
+}
+
+}

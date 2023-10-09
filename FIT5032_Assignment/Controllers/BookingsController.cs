@@ -42,7 +42,7 @@ namespace FIT5032_Assignment.Controllers
             {
                 // Handle other roles or unassigned roles here.
                 // You can redirect them to a different view, or display an error message, etc.
-                return RedirectToAction("Unauthorized", "Home"); // Assuming you have an Unauthorized action in your Home controller.
+                return RedirectToAction("Index", "Home"); // Assuming you have an Unauthorized action in your Home controller.
             }
         }
 
@@ -66,6 +66,11 @@ namespace FIT5032_Assignment.Controllers
         // GET: Bookings/Create
         public ActionResult Create()
         {
+            if (User.IsInRole("doctor"))
+            {
+                // 如果用户是医生 无法创建booking
+                return RedirectToAction("Index");
+            }
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
                                   .SelectMany(r => r.AspNetUsers)
                                   .Select(u => u.Id)
@@ -170,6 +175,11 @@ namespace FIT5032_Assignment.Controllers
         // GET: Bookings/Delete/5
         public ActionResult Delete(int? id)
         {
+            if (User.IsInRole("doctor")|| User.IsInRole("patient"))
+            {
+                // 如果用户是医生 病人 无法删除booking
+                return RedirectToAction("Index");
+            }
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
