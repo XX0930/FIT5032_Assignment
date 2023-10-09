@@ -5,11 +5,14 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="2fcafb0b391e4098bde8ee4b1b9b2627" Name="Diagram1">
-        <EntityTypeShape EntityType="Model.AspNetUsers" Width="2.125" PointX="5" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Booking" Width="1.5" PointX="8.375" PointY="1.5" />
+        <EntityTypeShape EntityType="Model.AspNetUsers" Width="2.125" PointX="3.375" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Booking" Width="1.75" PointX="6.75" PointY="0.75" />
         <AssociationConnector Association="Model.BookingAspNetUsers" />
-        <EntityTypeShape EntityType="Model.AspNetRoles" Width="1.5" PointX="2.125" PointY="2.125" />
-        <AssociationConnector Association="Model.AspNetRolesAspNetUsers" />
+        <EntityTypeShape EntityType="Model.AspNetRoles" Width="1.5" PointX="0.5" PointY="1.375" />
+        <EntityTypeShape EntityType="Model.Rating" Width="2.25" PointX="9.75" PointY="1.875" />
+        <AssociationConnector Association="Model.RatingAspNetUsers" />
+        <AssociationConnector Association="Model.RatingAspNetUsers1" />
+        <AssociationConnector Association="Model.AspNetUserRoles" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

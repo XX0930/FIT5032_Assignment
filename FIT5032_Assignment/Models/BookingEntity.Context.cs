@@ -28,5 +28,6 @@ namespace FIT5032_Assignment.Models
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Booking> BookingSet { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
+        public virtual DbSet<Rating> RatingSet { get; set; }
     }
 }

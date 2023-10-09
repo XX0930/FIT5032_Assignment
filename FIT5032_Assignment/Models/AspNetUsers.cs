@@ -18,6 +18,8 @@ namespace FIT5032_Assignment.Models
         public AspNetUsers()
         {
             this.Booking = new HashSet<Booking>();
+            this.Rating = new HashSet<Rating>();
+            this.Rating1 = new HashSet<Rating>();
             this.AspNetRoles = new HashSet<AspNetRoles>();
         }
     
@@ -36,6 +38,10 @@ namespace FIT5032_Assignment.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Booking> Booking { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Rating> Rating { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Rating> Rating1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AspNetRoles> AspNetRoles { get; set; }
     }
