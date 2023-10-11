@@ -28,12 +28,22 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AspNetUsers.Email)
+            @Html.DisplayNameFor(model => model.DoctorName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AspNetUsers.Email)
+            @Html.DisplayFor(model => model.DoctorName)
         </dd>
+        @if (User.IsInRole("admin"))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.AspNetUsers.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AspNetUsers.Email)
+            </dd>
+        }
 
     </dl>
 </div>

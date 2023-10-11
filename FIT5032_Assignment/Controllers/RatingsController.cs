@@ -10,7 +10,8 @@ using FIT5032_Assignment.Models;
 using Microsoft.AspNet.Identity;
 
 namespace FIT5032_Assignment.Controllers
-{   
+{
+    [Authorize]
     public class RatingsController : Controller
     {
         private Entities db = new Entities();
@@ -27,7 +28,7 @@ namespace FIT5032_Assignment.Controllers
             }
             if (User.IsInRole("patient"))
             {
-                // 如果用户是医生，只显示评价他的记录
+                // 如果用户是病人，只显示他的评价的记录
                 ratingSet = ratingSet.Where(r => r.AspNetUsersIdPatient == userId);
             }
 
@@ -58,10 +59,13 @@ namespace FIT5032_Assignment.Controllers
                 return RedirectToAction("Index");
             }
             var doctorRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "doctor");
+            var patientRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "patient");
             if (doctorRole != null)
             {
                 var doctorUsers = doctorRole.AspNetUsers.ToList();
+                var patientUsers = patientRole.AspNetUsers.ToList();
                 ViewBag.AspNetUsersIdDoctor = new SelectList(doctorUsers, "Id", "Email");
+                ViewBag.AspNetUsersIdPatient = new SelectList(patientUsers, "Id", "Email");
             }
 
             return View();
@@ -74,8 +78,12 @@ namespace FIT5032_Assignment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "RatingId,Score,Comment,AspNetUsersIdDoctor,AspNetUsersIdPatient")] Rating rating)
         {
-            var patientId = User.Identity.GetUserId(); // Assuming you are using ASP.NET Identity to get current user ID
-            rating.AspNetUsersIdPatient = patientId;
+            var patientId = User.Identity.GetUserId();
+            if (!User.IsInRole("admin"))
+            {
+                rating.AspNetUsersIdPatient = patientId;
+            }
+            
             if (ModelState.IsValid)
             {
                 db.RatingSet.Add(rating);
@@ -83,8 +91,6 @@ namespace FIT5032_Assignment.Controllers
                 return RedirectToAction("Index");
             }
 
-            //ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers, "Id", "Email", rating.AspNetUsersIdDoctor);
-            //ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers, "Id", "Email", rating.AspNetUsersIdPatient);
             var doctorRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "doctor");
             if (doctorRole != null)
             {
@@ -98,6 +104,15 @@ namespace FIT5032_Assignment.Controllers
         // GET: Ratings/Edit/5
         public ActionResult Edit(int? id)
         {
+            var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
+                                  .SelectMany(r => r.AspNetUsers)
+                                  .Select(u => u.Id)
+                                  .ToList();
+
+            var patientUserIds = db.AspNetRoles.Where(r => r.Name == "patient")
+                      .SelectMany(r => r.AspNetUsers)
+                      .Select(u => u.Id)
+                      .ToList();
             if (User.IsInRole("doctor"))
             {
                 return RedirectToAction("Index");
@@ -111,8 +126,9 @@ namespace FIT5032_Assignment.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers, "Id", "Email", rating.AspNetUsersIdDoctor);
-            ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers, "Id", "Email", rating.AspNetUsersIdPatient);
+
+            ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers.Where(u => doctorUserIds.Contains(u.Id)), "Id", "Email");
+            ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers.Where(u => patientUserIds.Contains(u.Id)), "Id", "Email");
             return View(rating);
         }
 
@@ -123,6 +139,11 @@ namespace FIT5032_Assignment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "RatingId,Score,Comment,AspNetUsersIdDoctor,AspNetUsersIdPatient")] Rating rating)
         {
+            var userid=User.Identity.GetUserId();
+            if (!User.IsInRole("admin"))
+            {
+                rating.AspNetUsersIdPatient = userid;
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(rating).State = EntityState.Modified;

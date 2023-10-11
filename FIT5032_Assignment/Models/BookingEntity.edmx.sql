@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 10/07/2023 16:54:13
+-- Date Created: 10/11/2023 01:01:36
 -- Generated from EDMX file: D:\5032\FIT5032_Assignment\FIT5032_Assignment\Models\BookingEntity.edmx
 -- --------------------------------------------------
 
@@ -13,6 +13,7 @@ GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
 
+
 -- --------------------------------------------------
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
@@ -20,11 +21,17 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_BookingAspNetUsers]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[BookingSet] DROP CONSTRAINT [FK_BookingAspNetUsers];
 GO
-IF OBJECT_ID(N'[dbo].[FK_AspNetRolesAspNetUsers_AspNetRoles]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AspNetRolesAspNetUsers] DROP CONSTRAINT [FK_AspNetRolesAspNetUsers_AspNetRoles];
+IF OBJECT_ID(N'[dbo].[FK_RatingAspNetUsers]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[RatingSet] DROP CONSTRAINT [FK_RatingAspNetUsers];
 GO
-IF OBJECT_ID(N'[dbo].[FK_AspNetRolesAspNetUsers_AspNetUsers]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AspNetRolesAspNetUsers] DROP CONSTRAINT [FK_AspNetRolesAspNetUsers_AspNetUsers];
+IF OBJECT_ID(N'[dbo].[FK_RatingAspNetUsers1]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[RatingSet] DROP CONSTRAINT [FK_RatingAspNetUsers1];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AspNetUserRoles_AspNetRoles]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AspNetUserRoles] DROP CONSTRAINT [FK_AspNetUserRoles_AspNetRoles];
+GO
+IF OBJECT_ID(N'[dbo].[FK_AspNetUserRoles_AspNetUsers]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AspNetUserRoles] DROP CONSTRAINT [FK_AspNetUserRoles_AspNetUsers];
 GO
 
 -- --------------------------------------------------
@@ -40,8 +47,11 @@ GO
 IF OBJECT_ID(N'[dbo].[AspNetRoles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[AspNetRoles];
 GO
-IF OBJECT_ID(N'[dbo].[AspNetRolesAspNetUsers]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[AspNetRolesAspNetUsers];
+IF OBJECT_ID(N'[dbo].[RatingSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[RatingSet];
+GO
+IF OBJECT_ID(N'[dbo].[AspNetUserRoles]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AspNetUserRoles];
 GO
 
 -- --------------------------------------------------
@@ -70,7 +80,8 @@ CREATE TABLE [dbo].[BookingSet] (
     [BookingId] int IDENTITY(1,1) NOT NULL,
     [Description] nvarchar(max)  NOT NULL,
     [BookingDate] nvarchar(max)  NOT NULL,
-    [AspNetUsersId] nvarchar(128)  NOT NULL
+    [AspNetUsersId] nvarchar(128)  NOT NULL,
+    [DoctorName] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -91,8 +102,8 @@ CREATE TABLE [dbo].[RatingSet] (
 );
 GO
 
--- Creating table 'AspNetRolesAspNetUsers'
-CREATE TABLE [dbo].[AspNetRolesAspNetUsers] (
+-- Creating table 'AspNetUserRoles'
+CREATE TABLE [dbo].[AspNetUserRoles] (
     [AspNetRoles_Id] nvarchar(128)  NOT NULL,
     [AspNetUsers_Id] nvarchar(128)  NOT NULL
 );
@@ -126,9 +137,9 @@ ADD CONSTRAINT [PK_RatingSet]
     PRIMARY KEY CLUSTERED ([RatingId] ASC);
 GO
 
--- Creating primary key on [AspNetRoles_Id], [AspNetUsers_Id] in table 'AspNetRolesAspNetUsers'
-ALTER TABLE [dbo].[AspNetRolesAspNetUsers]
-ADD CONSTRAINT [PK_AspNetRolesAspNetUsers]
+-- Creating primary key on [AspNetRoles_Id], [AspNetUsers_Id] in table 'AspNetUserRoles'
+ALTER TABLE [dbo].[AspNetUserRoles]
+ADD CONSTRAINT [PK_AspNetUserRoles]
     PRIMARY KEY CLUSTERED ([AspNetRoles_Id], [AspNetUsers_Id] ASC);
 GO
 
@@ -149,30 +160,6 @@ GO
 CREATE INDEX [IX_FK_BookingAspNetUsers]
 ON [dbo].[BookingSet]
     ([AspNetUsersId]);
-GO
-
--- Creating foreign key on [AspNetRoles_Id] in table 'AspNetRolesAspNetUsers'
-ALTER TABLE [dbo].[AspNetRolesAspNetUsers]
-ADD CONSTRAINT [FK_AspNetRolesAspNetUsers_AspNetRoles]
-    FOREIGN KEY ([AspNetRoles_Id])
-    REFERENCES [dbo].[AspNetRoles]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating foreign key on [AspNetUsers_Id] in table 'AspNetRolesAspNetUsers'
-ALTER TABLE [dbo].[AspNetRolesAspNetUsers]
-ADD CONSTRAINT [FK_AspNetRolesAspNetUsers_AspNetUsers]
-    FOREIGN KEY ([AspNetUsers_Id])
-    REFERENCES [dbo].[AspNetUsers]
-        ([Id])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_AspNetRolesAspNetUsers_AspNetUsers'
-CREATE INDEX [IX_FK_AspNetRolesAspNetUsers_AspNetUsers]
-ON [dbo].[AspNetRolesAspNetUsers]
-    ([AspNetUsers_Id]);
 GO
 
 -- Creating foreign key on [AspNetUsersIdDoctor] in table 'RatingSet'
@@ -205,6 +192,31 @@ ON [dbo].[RatingSet]
     ([AspNetUsersIdPatient]);
 GO
 
+-- Creating foreign key on [AspNetRoles_Id] in table 'AspNetUserRoles'
+ALTER TABLE [dbo].[AspNetUserRoles]
+ADD CONSTRAINT [FK_AspNetUserRoles_AspNetRoles]
+    FOREIGN KEY ([AspNetRoles_Id])
+    REFERENCES [dbo].[AspNetRoles]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [AspNetUsers_Id] in table 'AspNetUserRoles'
+ALTER TABLE [dbo].[AspNetUserRoles]
+ADD CONSTRAINT [FK_AspNetUserRoles_AspNetUsers]
+    FOREIGN KEY ([AspNetUsers_Id])
+    REFERENCES [dbo].[AspNetUsers]
+        ([Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_AspNetUserRoles_AspNetUsers'
+CREATE INDEX [IX_FK_AspNetUserRoles_AspNetUsers]
+ON [dbo].[AspNetUserRoles]
+    ([AspNetUsers_Id]);
+GO
+EXEC sp_rename 'dbo.AspNetUserRoles.AspNetRoles_Id', 'RoleId', 'COLUMN';
+EXEC sp_rename 'dbo.AspNetUserRoles.AspNetUsers_Id', 'UserId', 'COLUMN';
 -- --------------------------------------------------
 -- Script has ended
 -- --------------------------------------------------

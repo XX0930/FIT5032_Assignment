@@ -18,6 +18,7 @@ namespace FIT5032_Assignment.Models
         public string Description { get; set; }
         public string BookingDate { get; set; }
         public string AspNetUsersId { get; set; }
+        public string DoctorName { get; set; }
     
         public virtual AspNetUsers AspNetUsers { get; set; }
     }

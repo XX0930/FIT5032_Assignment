@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<FIT5032_Assignment.Models.Booking>
-
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,9 +6,9 @@
 
 <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
+@Html.ActionLink("Create New", "Create", new { @class = "btn btn-primary" })
+
 <table class="table">
     <tr>
         <th>
@@ -18,29 +17,81 @@
         <th>
             @Html.DisplayNameFor(model => model.BookingDate)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AspNetUsers.Email)
-        </th>
+        @if (User.IsInRole("doctor"))
+        {
+            <th>
+                Patient Name
+            </th>
+        }
+        @if (User.IsInRole("patient"))
+        {
+            <th>
+                @Html.DisplayName("Doctor name")
+            </th>
+        }
+        @if (User.IsInRole("admin"))
+        {
+            <th>
+                Patient Name
+            </th>
+            <th>
+                @Html.DisplayName("Doctor name")
+            </th>
+        }
+
+
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.BookingDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.BookingId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.BookingId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.BookingId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BookingDate)
+            </td>
+
+
+            @if (User.IsInRole("doctor"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
+                </td>
+            }
+            @if (User.IsInRole("patient"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.DoctorName)
+                </td>
+            }
+            @if (User.IsInRole("admin"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DoctorName)
+                </td>
+            }
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.BookingId }) |
+                @Html.ActionLink("Details", "Details", new { id = item.BookingId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.BookingId })
+            </td>
+        </tr>
+    }
 
 </table>
+@section scripts{
+    @if (ViewBag.IsDoctor)
+    {
+        <script>
+            $(document).ready(function () {
+                $.notify("Doctor cannot create booking", "error");
+            });
+        </script>
+    }
+}
