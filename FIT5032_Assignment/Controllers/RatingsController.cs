@@ -21,6 +21,7 @@ namespace FIT5032_Assignment.Controllers
         {
             var ratingSet = db.RatingSet.Include(r => r.AspNetUsersDoctor).Include(r => r.AspNetUsersPatient);
             var userId = User.Identity.GetUserId();
+
             if (User.IsInRole("doctor"))
             {
                 // 如果用户是医生，只显示评价他的记录
@@ -58,15 +59,40 @@ namespace FIT5032_Assignment.Controllers
                 // 如果用户是doctor，重定向他们回到Index页面
                 return RedirectToAction("Index");
             }
+
             var doctorRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "doctor");
             var patientRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "patient");
-            if (doctorRole != null)
+            
+            var doctorsUsers = doctorRole.AspNetUsers.ToList();
+            var patientUsers = patientRole.AspNetUsers.ToList();
+            
+
+            //return View();
+            var patientId = User.Identity.GetUserId();
+
+            // 获取这个患者所有的预约医生名称
+            var bookedDoctorNames = db.BookingSet.Where(b => b.AspNetUsersId == patientId).Select(b => b.DoctorName).ToList();
+
+            // 根据这些名称从AspNetUsers表中获取医生的ID
+            var bookedDoctorIds = db.AspNetUsers.Where(u => bookedDoctorNames.Contains(u.UserName) && u.AspNetRoles.Any(r => r.Name == "doctor")).Select(u => u.Id).ToList();
+
+            // 获取这个患者已经评价的医生
+            var ratedDoctors = db.RatingSet.Where(r => r.AspNetUsersIdPatient == patientId).Select(r => r.AspNetUsersIdDoctor).ToList();
+
+            // 只选择那些已预约但尚未评价的医生
+            var doctorsToRate = bookedDoctorIds.Except(ratedDoctors).ToList();
+
+            var doctorUsers = db.AspNetUsers.Where(u => doctorsToRate.Contains(u.Id)).ToList();
+            if (User.IsInRole("patient"))
             {
-                var doctorUsers = doctorRole.AspNetUsers.ToList();
-                var patientUsers = patientRole.AspNetUsers.ToList();
                 ViewBag.AspNetUsersIdDoctor = new SelectList(doctorUsers, "Id", "Email");
+            }else if (User.IsInRole("admin"))
+            {
+                ViewBag.AspNetUsersIdDoctor = new SelectList(doctorsUsers, "Id", "Email");
                 ViewBag.AspNetUsersIdPatient = new SelectList(patientUsers, "Id", "Email");
             }
+            
+
 
             return View();
         }

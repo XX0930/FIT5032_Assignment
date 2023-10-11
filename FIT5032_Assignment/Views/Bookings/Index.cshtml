@@ -4,10 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<h2>Your Booking</h2>
 
 
-@Html.ActionLink("Create New", "Create", new { @class = "btn btn-primary" })
+
 
 <table class="table">
     <tr>
@@ -77,14 +77,19 @@
             }
 
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.BookingId }) |
-                @Html.ActionLink("Details", "Details", new { id = item.BookingId }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.BookingId })
+                @Html.ActionLink("Edit", "Edit", new { id = item.BookingId }, new { @class = "btn btn-primary" }) 
+                @Html.ActionLink("Details", "Details", new { id = item.BookingId }, new { @class = "btn btn-primary" }) 
+                @Html.ActionLink("Delete", "Delete", new { id = item.BookingId }, new { @class = "btn btn-danger" })
             </td>
         </tr>
     }
 
 </table>
+<div>
+    @Html.ActionLink("Create New", "Create", new {@class= "btn btn-primary" })
+</div>
+
+
 @section scripts{
     @if (ViewBag.IsDoctor)
     {
