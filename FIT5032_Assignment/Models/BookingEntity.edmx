@@ -43,7 +43,7 @@
           </Key>
           <Property Name="BookingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="BookingDate" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="BookingDate" Type="datetime" Nullable="false" />
           <Property Name="AspNetUsersId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="DoctorName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
@@ -52,7 +52,7 @@
             <PropertyRef Name="RatingId" />
           </Key>
           <Property Name="RatingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Score" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Score" Type="int" Nullable="false" />
           <Property Name="Comment" Type="nvarchar(max)" Nullable="false" />
           <Property Name="AspNetUsersIdDoctor" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="AspNetUsersIdPatient" Type="nvarchar" MaxLength="128" Nullable="false" />
@@ -197,7 +197,7 @@
           </Key>
           <Property Name="BookingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="BookingDate" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="BookingDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="AspNetUsers" Relationship="Model.BookingAspNetUsers" FromRole="Booking" ToRole="AspNetUsers" />
           <Property Name="AspNetUsersId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="DoctorName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
@@ -227,7 +227,7 @@
             <PropertyRef Name="RatingId" />
           </Key>
           <Property Name="RatingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Score" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Score" Type="Int32" Nullable="false" />
           <Property Name="Comment" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="AspNetUsersDoctor" Relationship="Model.RatingAspNetUsers" FromRole="Rating" ToRole="AspNetUsers" />
           <Property Name="AspNetUsersIdDoctor" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />

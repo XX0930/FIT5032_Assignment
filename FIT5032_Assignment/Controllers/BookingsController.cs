@@ -38,7 +38,7 @@ namespace FIT5032_Assignment.Controllers
             else if (User.IsInRole("doctor"))
             {
                 var bookingSet = db.BookingSet.Where(b => b.AspNetUsersId == currentUserId).Include(b => b.AspNetUsers);
-                
+
                 return View(bookingSet.ToList());
             }
             else
@@ -86,10 +86,10 @@ namespace FIT5032_Assignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string Description,string BookingDate,string AspNetUsersIdDoctor)
+        public ActionResult Create(string Description, DateTime BookingDate, string AspNetUsersIdDoctor)
         {
             var patientId = User.Identity.GetUserId();
-            
+
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
                                   .SelectMany(r => r.AspNetUsers)
                                   .Select(u => u.Id)
@@ -155,7 +155,7 @@ namespace FIT5032_Assignment.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BookingId,Description,BookingDate,AspNetUsersIdDoctor")] Booking booking,string AspNetUsersIdDoctor)
+        public ActionResult Edit([Bind(Include = "BookingId,Description,BookingDate,AspNetUsersIdDoctor")] Booking booking, string AspNetUsersIdDoctor)
         {
 
             var currentBooking = db.BookingSet.Find(booking.BookingId);

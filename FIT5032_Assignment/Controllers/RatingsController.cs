@@ -21,9 +21,25 @@ namespace FIT5032_Assignment.Controllers
         {
             var ratingSet = db.RatingSet.Include(r => r.AspNetUsersDoctor).Include(r => r.AspNetUsersPatient);
             var userId = User.Identity.GetUserId();
+            var doctorAverageRatings = db.RatingSet
+                        .GroupBy(r => r.AspNetUsersIdDoctor)
+                        .Join(db.AspNetUsers,
+                        rating => rating.Key,
+                        user => user.Id,
+                        (rating, user) => new
+                        {
+                            DoctorId = user.Id,
+                            DocName = user.UserName,
+                            AverageRating = rating.Average(r => r.Score) //确保Score是数字
+                        })
+                .ToList();
+            ViewBag.doctorNameAverageRatings = doctorAverageRatings;
 
             if (User.IsInRole("doctor"))
             {
+                var doctorId = User.Identity.GetUserId();
+                var doctorAverageRating = doctorAverageRatings.FirstOrDefault(d => d.DoctorId == doctorId);
+                ViewBag.doctorAverageRating = doctorAverageRating.AverageRating;
                 // 如果用户是医生，只显示评价他的记录
                 ratingSet = ratingSet.Where(r => r.AspNetUsersIdDoctor == userId);
             }
@@ -32,7 +48,6 @@ namespace FIT5032_Assignment.Controllers
                 // 如果用户是病人，只显示他的评价的记录
                 ratingSet = ratingSet.Where(r => r.AspNetUsersIdPatient == userId);
             }
-
             return View(ratingSet.ToList());
         }
 
@@ -62,10 +77,10 @@ namespace FIT5032_Assignment.Controllers
 
             var doctorRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "doctor");
             var patientRole = db.AspNetRoles.FirstOrDefault(r => r.Name == "patient");
-            
+
             var doctorsUsers = doctorRole.AspNetUsers.ToList();
             var patientUsers = patientRole.AspNetUsers.ToList();
-            
+
 
             //return View();
             var patientId = User.Identity.GetUserId();
@@ -86,12 +101,13 @@ namespace FIT5032_Assignment.Controllers
             if (User.IsInRole("patient"))
             {
                 ViewBag.AspNetUsersIdDoctor = new SelectList(doctorUsers, "Id", "Email");
-            }else if (User.IsInRole("admin"))
+            }
+            else if (User.IsInRole("admin"))
             {
                 ViewBag.AspNetUsersIdDoctor = new SelectList(doctorsUsers, "Id", "Email");
                 ViewBag.AspNetUsersIdPatient = new SelectList(patientUsers, "Id", "Email");
             }
-            
+
 
 
             return View();
@@ -109,7 +125,7 @@ namespace FIT5032_Assignment.Controllers
             {
                 rating.AspNetUsersIdPatient = patientId;
             }
-            
+
             if (ModelState.IsValid)
             {
                 db.RatingSet.Add(rating);
@@ -130,6 +146,7 @@ namespace FIT5032_Assignment.Controllers
         // GET: Ratings/Edit/5
         public ActionResult Edit(int? id)
         {
+
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
                                   .SelectMany(r => r.AspNetUsers)
                                   .Select(u => u.Id)
@@ -139,10 +156,22 @@ namespace FIT5032_Assignment.Controllers
                       .SelectMany(r => r.AspNetUsers)
                       .Select(u => u.Id)
                       .ToList();
-            if (User.IsInRole("doctor"))
-            {
-                return RedirectToAction("Index");
-            }
+
+            var patientId = User.Identity.GetUserId();
+
+            // 获取这个患者所有的预约医生名称
+            var bookedDoctorNames = db.BookingSet.Where(b => b.AspNetUsersId == patientId).Select(b => b.DoctorName).ToList();
+
+            // 根据这些名称从AspNetUsers表中获取医生的ID
+            var bookedDoctorIds = db.AspNetUsers.Where(u => bookedDoctorNames.Contains(u.UserName) && u.AspNetRoles.Any(r => r.Name == "doctor")).Select(u => u.Id).ToList();
+
+            // 获取这个患者已经评价的医生
+            var ratedDoctors = db.RatingSet.Where(r => r.AspNetUsersIdPatient == patientId).Select(r => r.AspNetUsersIdDoctor).ToList();
+
+            // 只选择那些已预约但尚未评价的医生
+            var doctorsToRate = bookedDoctorIds.Except(ratedDoctors).ToList();
+
+            var doctorUsers = db.AspNetUsers.Where(u => doctorsToRate.Contains(u.Id)).ToList();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -152,9 +181,17 @@ namespace FIT5032_Assignment.Controllers
             {
                 return HttpNotFound();
             }
+            if (User.IsInRole("admin"))
+            {
+                ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers.Where(u => doctorUserIds.Contains(u.Id)), "Id", "Email");
+                ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers.Where(u => patientUserIds.Contains(u.Id)), "Id", "Email");
+            }
+            if (User.IsInRole("patient"))
+            {
+                ViewBag.AspNetUsersIdDoctor = new SelectList(doctorUsers, "Id", "Email");
+                ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers.Where(u => patientUserIds.Contains(u.Id)), "Id", "Email");
+            }
 
-            ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers.Where(u => doctorUserIds.Contains(u.Id)), "Id", "Email");
-            ViewBag.AspNetUsersIdPatient = new SelectList(db.AspNetUsers.Where(u => patientUserIds.Contains(u.Id)), "Id", "Email");
             return View(rating);
         }
 
@@ -165,7 +202,7 @@ namespace FIT5032_Assignment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "RatingId,Score,Comment,AspNetUsersIdDoctor,AspNetUsersIdPatient")] Rating rating)
         {
-            var userid=User.Identity.GetUserId();
+            var userid = User.Identity.GetUserId();
             if (!User.IsInRole("admin"))
             {
                 rating.AspNetUsersIdPatient = userid;

@@ -11,12 +11,15 @@ namespace FIT5032_Assignment.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Booking
     {
         public int BookingId { get; set; }
+        [Required]
         public string Description { get; set; }
-        public string BookingDate { get; set; }
+        [DataType(DataType.Date)]
+        public System.DateTime BookingDate { get; set; }
         public string AspNetUsersId { get; set; }
         public string DoctorName { get; set; }
     

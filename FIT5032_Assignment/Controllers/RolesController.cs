@@ -33,6 +33,7 @@ namespace FIT5032_Assignment.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Assign(string UserName, string RoleName)
         {
             var user = db.AspNetUsers.Find(UserName);
@@ -65,6 +66,7 @@ namespace FIT5032_Assignment.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult EditRole(string userId, string roleId)
         {
             var user = db.AspNetUsers.Include("AspNetRoles").FirstOrDefault(u => u.Id == userId);

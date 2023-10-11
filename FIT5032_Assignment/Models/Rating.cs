@@ -15,7 +15,7 @@ namespace FIT5032_Assignment.Models
     public partial class Rating
     {
         public int RatingId { get; set; }
-        public string Score { get; set; }
+        public int Score { get; set; }
         public string Comment { get; set; }
         public string AspNetUsersIdDoctor { get; set; }
         public string AspNetUsersIdPatient { get; set; }

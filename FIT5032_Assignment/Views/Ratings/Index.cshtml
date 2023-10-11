@@ -6,14 +6,20 @@
 }
 
 <h2>Your Rating</h2>
+@if (!User.IsInRole("doctor"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create", new { @class = "btn btn-primary" })
+    </p>
+}
 
-<p>
-    @Html.ActionLink("Create New", "Create", new { @class = "btn btn-primary" })
-</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Score)
+            No.
+        </th>
+        <th>
+            Rating
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Comment)
@@ -34,9 +40,16 @@
         <th></th>
     </tr>
 
+    @{
+        int counter = 1; // Initialize the counter
+    }
+
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @counter
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Score)
             </td>
@@ -62,8 +75,14 @@
                     @Html.ActionLink("Details", "Details", new { id = item.RatingId }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Delete", "Delete", new { id = item.RatingId }, new { @class = "btn btn-danger" })
                 </td>
-        }
-            </tr>
+            }
+        </tr>
+
+        counter++; // Increase the counter for each iteration
     }
 
 </table>
+@if (User.IsInRole("doctor"))
+{
+    <p>Average Rating: @ViewBag.doctorAverageRating.ToString("F2") </p>
+}

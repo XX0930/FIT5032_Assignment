@@ -8,6 +8,7 @@
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     <div class="form-group">
         <label for="UserName">User:</label>
         @Html.DropDownList("UserName", (SelectList)ViewBag.Users, new { @class = "form-control" })
@@ -17,7 +18,7 @@
         <label for="RoleName">Role:</label>
         @Html.DropDownList("RoleName", (SelectList)ViewBag.Roles, new { @class = "form-control" })
     </div>
-
+    <br/>
     <button type="submit" class="btn btn-primary">Assign</button>
 }
 

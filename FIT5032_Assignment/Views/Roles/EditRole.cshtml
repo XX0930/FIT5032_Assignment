@@ -8,6 +8,7 @@
 
 @using (Html.BeginForm())
 {
+    @Html.AntiForgeryToken()
     <input type="hidden" name="Id" value="@Model.Id" />
     @Html.Label("Roles", "Select New Role")
     <br />
