@@ -54,9 +54,9 @@ namespace FIT5032_Assignment
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "1498489940948493",
+               appSecret: "20e25b8e5edb3ac7e3c27c5492819d7b");
 
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {

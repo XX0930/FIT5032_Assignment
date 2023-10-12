@@ -7,8 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.IO;
-using System.Threading.Tasks;
 namespace FIT5032_Assignment.Controllers
 {
     [RequireHttps]
@@ -41,7 +39,7 @@ namespace FIT5032_Assignment.Controllers
             return View(new SendEmailViewModel());
         }
 
-        [Authorize]
+
         [HttpPost]
         public async Task<ActionResult> Send_Email(SendEmailViewModel model)
         {
