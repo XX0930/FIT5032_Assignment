@@ -4,29 +4,45 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Role</h2>
-
-
+<h2>Role Management</h2>
 
 <table class="table">
     <thead>
         <tr>
             <th>Username</th>
             <th>Roles</th>
+            <th></th>
+            <th></th>
+
         </tr>
     </thead>
+
     <tbody>
         @foreach (var user in Model)
         {
             <tr>
-                <td>@user.UserName</td>
+                <td>
+                    @user.UserName
+                </td>
                 <td>
                     @string.Join(", ", user.AspNetRoles.Select(r => r.Name))
                 </td>
-                <td>@Html.ActionLink("Edit", "EditRole", "Roles", new { userId = user.Id }, new {@class= "btn btn-primary" })</td>
+                <td>@Html.ActionLink("Edit", "EditRole", "Roles", new { userId = user.Id }, new { @class = "btn btn-primary" })</td>
                 <td>@Html.ActionLink("Delete", "DeleteRole", new { userId = user.Id }, new { @class = "btn btn-danger", onclick = "return confirm('Are you sure you want to delete all roles for this user?');" })</td>
             </tr>
         }
     </tbody>
 </table>
 @Html.ActionLink("Assign Role", "Assign", "Roles", null, new { @class = "btn btn-primary" })
+
+@section scripts{
+
+    @Scripts.Render("~/Scripts/DataTables/jquery.dataTables.js")
+    @Scripts.Render("~/Scripts/DataTables/dataTables.bootstrap.js")
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
+}
+<link rel="stylesheet" href="~/Content/DataTables/css/dataTables.bootstrap.min.css"/>

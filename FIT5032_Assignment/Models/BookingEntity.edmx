@@ -43,7 +43,7 @@
           </Key>
           <Property Name="BookingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="BookingDate" Type="datetime" Nullable="false" />
+          <Property Name="BookingDate" Type="date" Nullable="false" />
           <Property Name="AspNetUsersId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="DoctorName" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
@@ -197,7 +197,7 @@
           </Key>
           <Property Name="BookingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="BookingDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="BookingDate" Type="DateTime" Nullable="false" Precision="0" />
           <NavigationProperty Name="AspNetUsers" Relationship="Model.BookingAspNetUsers" FromRole="Booking" ToRole="AspNetUsers" />
           <Property Name="AspNetUsersId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="DoctorName" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />

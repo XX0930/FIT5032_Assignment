@@ -48,6 +48,21 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.BookingId }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BookingId }, new { @class = "btn btn-primary create-booking-btn" }) |
+    @Html.ActionLink("Back to List", "Index", new { @class = "btn btn-primary" })
 </p>
+@section scripts{
+
+
+    @if (User.IsInRole("doctor"))
+    {
+        <script>
+            $(document).ready(function () {
+                $('.create-booking-btn').click(function (e) {
+                    e.preventDefault();
+                    $.notify("Doctor cannot create edit or delete booking", "error");
+                });
+            });
+        </script>
+    }
+}

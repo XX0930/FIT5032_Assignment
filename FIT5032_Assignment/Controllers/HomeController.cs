@@ -17,7 +17,6 @@ namespace FIT5032_Assignment.Controllers
             return View();
         }
 
-        [Authorize(Roles = "admin")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
@@ -33,7 +32,7 @@ namespace FIT5032_Assignment.Controllers
             return View();
         }
 
-        [Authorize(Roles = "doctor")]
+        [Authorize(Roles = "admin")]
         public ActionResult Send_Email()
         {
             return View(new SendEmailViewModel());
@@ -81,7 +80,6 @@ namespace FIT5032_Assignment.Controllers
                     return View();
                 }
             }
-
             return View();
         }
     }

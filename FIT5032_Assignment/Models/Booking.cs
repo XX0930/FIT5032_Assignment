@@ -16,9 +16,10 @@ namespace FIT5032_Assignment.Models
     public partial class Booking
     {
         public int BookingId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Description is required.")]
         public string Description { get; set; }
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "Date is required.")]
         public System.DateTime BookingDate { get; set; }
         public string AspNetUsersId { get; set; }
         public string DoctorName { get; set; }

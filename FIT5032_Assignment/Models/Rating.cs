@@ -11,11 +11,16 @@ namespace FIT5032_Assignment.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Rating
     {
         public int RatingId { get; set; }
+        [Required(ErrorMessage = "Score is required.")]
+        [Range(1, 5, ErrorMessage = "Score must be between 1 and 5.")]
         public int Score { get; set; }
+        [Required(ErrorMessage = "Comment is required.")]
+        [StringLength(200, MinimumLength = 5, ErrorMessage = "Comment must be between 5 and 200 characters long.")]
         public string Comment { get; set; }
         public string AspNetUsersIdDoctor { get; set; }
         public string AspNetUsersIdPatient { get; set; }

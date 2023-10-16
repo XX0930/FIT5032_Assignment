@@ -6,9 +6,9 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cdbootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cdbootstrap/css/cdb.min.css" />
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/DataTables/css/dataTables.bootstrap.min.css" />
 
+    @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/jqueryuicss")
 
 
@@ -25,17 +25,18 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    @*<li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
-                    @*<li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>*@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink("Booking", "Index", "Bookings", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Email", "Send_Email", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                        <li>@Html.ActionLink("Rating", "Index", "Ratings", new { area = "" }, new { @class = "nav-link" })</li>
-                        if (User.IsInRole("admin"))
+                        if (!User.IsInRole(""))
                         {
-                            <li>@Html.ActionLink("Role", "Index", "Roles", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Booking", "Index", "Bookings", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Email", "Send_Email", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Rating", "Index", "Ratings", new { area = "" }, new { @class = "nav-link" })</li>
+                            if (User.IsInRole("admin"))
+                            {
+                                <li>@Html.ActionLink("Role", "Index", "Roles", new { area = "" }, new { @class = "nav-link" })</li>
+                            }
                         }
                     }
                 </ul>
@@ -47,14 +48,17 @@
         @RenderBody()
         <hr />
         @*<footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>*@
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>*@
     </div>
+    @Scripts.Render("~/bundles/modernizr")
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryui")
-
+     @*@Scripts.Render("~/bundles/fullcalendar")*@
+    @Scripts.Render("~/Scripts/DataTables/jquery.dataTables.js")
+    @Scripts.Render("~/Scripts/DataTables/dataTables.bootstrap.js")
 
     <!--<!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.0.7/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />-->
@@ -66,7 +70,6 @@
     <script src="https://cdn.jsdelivr.net/npm/cdbootstrap/js/cdb.min.js"></script>-->
     <script src="~/Scripts/notify.min.js" defer></script>
     @RenderSection("scripts", required: false)
-
 
 </body>
 </html>

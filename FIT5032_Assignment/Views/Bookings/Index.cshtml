@@ -5,98 +5,119 @@
 }
 
 <h2>Your Booking</h2>
-
-
-
-
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BookingDate)
-        </th>
-        @if (User.IsInRole("doctor"))
-        {
-            <th>
-                Patient Name
-            </th>
-        }
-        @if (User.IsInRole("patient"))
-        {
-            <th>
-                @Html.DisplayName("Doctor name")
-            </th>
-        }
-        @if (User.IsInRole("admin"))
-        {
-            <th>
-                Patient Name
-            </th>
-            <th>
-                @Html.DisplayName("Doctor name")
-            </th>
-        }
-
-
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BookingDate)
-            </td>
-
-
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BookingDate)
+            </th>
             @if (User.IsInRole("doctor"))
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
-                </td>
+                <th>
+                    Patient Name
+                </th>
             }
             @if (User.IsInRole("patient"))
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.DoctorName)
-                </td>
+                <th>
+                    @Html.DisplayName("Doctor name")
+                </th>
             }
             @if (User.IsInRole("admin"))
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DoctorName)
-                </td>
+                <th>
+                    Patient Name
+                </th>
+                <th>
+                    @Html.DisplayName("Doctor name")
+                </th>
             }
-
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.BookingId }, new { @class = "btn btn-primary" }) 
-                @Html.ActionLink("Details", "Details", new { id = item.BookingId }, new { @class = "btn btn-primary" }) 
-                @Html.ActionLink("Delete", "Delete", new { id = item.BookingId }, new { @class = "btn btn-danger" })
-            </td>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingDate)
+                </td>
 
+                @if (User.IsInRole("doctor"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
+                    </td>
+                }
+
+
+                @if (User.IsInRole("patient"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DoctorName)
+                    </td>
+                }
+
+                @if (User.IsInRole("admin"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsers.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DoctorName)
+                    </td>
+                }
+
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.BookingId }, new { @class = "btn btn-primary" })
+                </td>
+
+                <td class="create-booking-btn">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.BookingId }, new { @class = "btn btn-primary" })
+                </td>
+                <td class="create-booking-btn">
+                    @Html.ActionLink("Delete", "Delete", new { id = item.BookingId }, new { @class = "btn btn-danger" })
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
-<div>
-    @Html.ActionLink("Create New", "Create", new {@class= "btn btn-primary" })
+<div class="create-booking-btn btn">
+    @Html.ActionLink("Create New", "Create")
 </div>
 
 
+
 @section scripts{
-    @if (ViewBag.IsDoctor)
+
+    @*<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>*@
+    @if (User.IsInRole("doctor"))
     {
         <script>
             $(document).ready(function () {
-                $.notify("Doctor cannot create booking", "error");
+                $('.create-booking-btn').click(function (e) {
+                    e.preventDefault(); 
+                    $.notify("Doctor cannot create edit or delete booking", "error");
+                });
             });
         </script>
     }
+
+
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        })
+    </script>
+
+
 }
+

@@ -15,4 +15,4 @@ GO
 
 
 ALTER TABLE [dbo].[BookingSet]
-ALTER COLUMN [BookingDate] DateTime NOT NULL;
+ALTER COLUMN [BookingDate] Date NOT NULL;

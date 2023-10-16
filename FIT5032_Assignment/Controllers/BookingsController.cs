@@ -37,7 +37,11 @@ namespace FIT5032_Assignment.Controllers
             // If user is a doctor
             else if (User.IsInRole("doctor"))
             {
-                var bookingSet = db.BookingSet.Where(b => b.AspNetUsersId == currentUserId).Include(b => b.AspNetUsers);
+                // get doctor name from user table
+                var doctorName = db.AspNetUsers.Where(u => u.Id == currentUserId).Select(u => u.UserName).FirstOrDefault();
+
+                // select the booking 
+                var bookingSet = db.BookingSet.Where(b => b.DoctorName == doctorName).ToList();
 
                 return View(bookingSet.ToList());
             }
@@ -64,12 +68,12 @@ namespace FIT5032_Assignment.Controllers
             return View(booking);
         }
 
+        
         // GET: Bookings/Create
         public ActionResult Create()
         {
             if (User.IsInRole("doctor"))
-            {
-                // 如果用户是医生 无法创建booking
+            {    
                 return RedirectToAction("Index");
             }
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
@@ -88,6 +92,7 @@ namespace FIT5032_Assignment.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(string Description, DateTime BookingDate, string AspNetUsersIdDoctor)
         {
+
             var patientId = User.Identity.GetUserId();
 
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
@@ -97,6 +102,19 @@ namespace FIT5032_Assignment.Controllers
 
             var user = db.AspNetUsers.FirstOrDefault(u => u.Id == AspNetUsersIdDoctor);
 
+            // 1. Check the doctor conflict
+            var doctorConflict = db.BookingSet.Any(b => b.BookingDate == BookingDate && b.DoctorName == user.UserName);
+
+            // 2. Check the patient conflict
+            var patientConflict = db.BookingSet.Any(b => b.BookingDate == BookingDate && b.AspNetUsersId == patientId);
+
+            // 3. occur conflict
+            if (doctorConflict || patientConflict)
+            {
+                ModelState.AddModelError("", "The selected doctor or patient is already booked at the specified time.");
+                ViewBag.AspNetUsersIdDoctor = new SelectList(db.AspNetUsers.Where(u => doctorUserIds.Contains(u.Id)), "Id", "Email");
+                return View();
+            }
             Booking booking = new Booking();
             //booking.AspNetUsersId = patientId;
             if (ModelState.IsValid)
@@ -119,6 +137,11 @@ namespace FIT5032_Assignment.Controllers
         // GET: Bookings/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (User.IsInRole("doctor"))
+            {
+                // doctor cannot edit booking
+                return RedirectToAction("Index");
+            }
             var doctorUserIds = db.AspNetRoles.Where(r => r.Name == "doctor")
                       .SelectMany(r => r.AspNetUsers)
                       .Select(u => u.Id)
@@ -190,9 +213,9 @@ namespace FIT5032_Assignment.Controllers
         // GET: Bookings/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (User.IsInRole("doctor") || User.IsInRole("patient"))
+            if (!User.IsInRole("admin") )
             {
-                // 如果用户是医生 病人 无法删除booking
+                // only admin can delete booking
                 return RedirectToAction("Index");
             }
             if (id == null)

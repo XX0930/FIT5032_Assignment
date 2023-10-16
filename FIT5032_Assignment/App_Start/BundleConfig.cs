@@ -8,6 +8,14 @@ namespace FIT5032_Assignment
         // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+
+            bundles.Add(new ScriptBundle("~/bundles/fullcalendar").Include(
+             "~/Scripts/lib/jquery.min.js",
+             "~/Scripts/lib/moment.min.js",
+             "~/Scripts/fullcalendar.js"
+             ));
+
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -31,6 +39,8 @@ namespace FIT5032_Assignment
 
             bundles.Add(new StyleBundle("~/Content/jqueryuicss").Include(
                       "~/Content/themes/base/jquery-ui.min.css"));
+
+
         }
     }
 }

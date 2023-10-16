@@ -14,75 +14,91 @@
 }
 
 <table class="table">
-    <tr>
-        <th>
-            No.
-        </th>
-        <th>
-            Rating
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Comment)
-        </th>
-        @if (User.IsInRole("admin") || User.IsInRole("patient"))
-        {
-            <th>
-                Doctor's Email
-            </th>
-        }
-        @if (User.IsInRole("admin") || User.IsInRole("doctor"))
-        {
-            <th>
-                Patient's Email
-            </th>
-        }
-
-        <th></th>
-    </tr>
-
-    @{
-        int counter = 1; // Initialize the counter
-    }
-
-    @foreach (var item in Model)
-    {
+    <thead>
         <tr>
-            <td>
-                @counter
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Score)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
+            <th>
+                No.
+            </th>
+            <th>
+                Rating
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Comment)
+            </th>
             @if (User.IsInRole("admin") || User.IsInRole("patient"))
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsersDoctor.Email)
-                </td>
+                <th>
+                    Doctor's Email
+                </th>
             }
             @if (User.IsInRole("admin") || User.IsInRole("doctor"))
             {
-                <td>
-                    @Html.DisplayFor(modelItem => item.AspNetUsersPatient.Email)
-                </td>
+                <th>
+                    Patient's Email
+                </th>
             }
-            @if (!User.IsInRole("doctor"))
-            {
+
+            <th></th>
+        </tr>
+    </thead>
+    @{
+        int counter = 1; // Initialize the counter
+    }
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
+                    @counter
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Score)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Comment)
+                </td>
+                @if (User.IsInRole("admin") || User.IsInRole("patient"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsersDoctor.Email)
+                    </td>
+                }
+                @if (User.IsInRole("admin") || User.IsInRole("doctor"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AspNetUsersPatient.Email)
+                    </td>
+                }
+            <td>
+                @if (!User.IsInRole("doctor"))
+                {
+
                     @Html.ActionLink("Edit", "Edit", new { id = item.RatingId }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Details", "Details", new { id = item.RatingId }, new { @class = "btn btn-primary" })
                     @Html.ActionLink("Delete", "Delete", new { id = item.RatingId }, new { @class = "btn btn-danger" })
-                </td>
-            }
-        </tr>
 
-        counter++; // Increase the counter for each iteration
-    }
+                }
+            </td>
+            </tr>
 
+            counter++; // Increase the counter for each iteration
+        }
+    </tbody>
 </table>
-@if (User.IsInRole("doctor"))
+@if (User.IsInRole("doctor") && ViewBag.doctorAverageRating != null)
 {
     <p>Average Rating: @ViewBag.doctorAverageRating.ToString("F2") </p>
+}
+else if (User.IsInRole("doctor"))
+{
+    <p>No ratings available.</p>
+}
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+    </script>
 }
