@@ -11,7 +11,7 @@ namespace FIT5032_Assignment.Utils
 {
     public class EmailSender
     {
-        private const String API_KEY = "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";
+        private const String API_KEY = "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";
         public async Task<SendGrid.Response> Send(String toEmail, String subject, String contents, Stream attachmentStream = null, string attachmentFilename = "")
         {
             var client = new SendGridClient(API_KEY);
