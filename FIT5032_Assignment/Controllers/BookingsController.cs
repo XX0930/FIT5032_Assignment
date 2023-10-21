@@ -132,7 +132,6 @@ namespace FIT5032_Assignment.Controllers
             return View(booking);
         }
 
-
         // GET: Bookings/Edit/5
         // GET: Bookings/Edit/5
         public ActionResult Edit(int? id)

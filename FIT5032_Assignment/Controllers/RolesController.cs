@@ -40,12 +40,12 @@ namespace FIT5032_Assignment.Controllers
             var role = db.AspNetRoles.Find(RoleName);
             if (user == null || role == null)
             {
-                // 错误处理
+                
                 return View();
             }
             if (!user.AspNetRoles.Contains(role))
             {
-                // 分配角色给用户
+                // Assign the role
                 user.AspNetRoles.Add(role);
                 db.SaveChanges();
             }
